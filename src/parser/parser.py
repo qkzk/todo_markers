@@ -1,7 +1,6 @@
 from __future__ import annotations
-from collections.abc import KeysView
 import re
-from typing import ItemsView, Iterator, Optional, ValuesView
+from typing import Optional
 
 from .comment_keyword import COMMENT_KEYWORDS
 

@@ -1,15 +1,15 @@
 # TODO markers
 
-inspired by [Tsoding : Snitch](/home/quentin/gclem/dev/python/boulot_utils/todo_markers/todo_markers.py)
+inspired by [Tsoding : Snitch](/https://github.com/tsoding/snitch)
 
 ## Workflow
 
-- [ ] parse source file from repo
-  - [ ] navigate worktree
-  - [ ] keep tracks of files (?)
-  - [ ] read & parse file
+- [x] parse source file from repo
+  - [x] navigate worktree
+  - [x] keep tracks of files (?)
+  - [x] read & parse file
 - [ ] sort todos by gravity
-- [ ] creates / maintain a report
+- [x] creates / maintain a report
 - [ ] creates an issue for every non reported todo
 - [ ] commit & push the report
 - [ ] config : `.todoconfig`

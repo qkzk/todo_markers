@@ -2,19 +2,24 @@ import yaml
 
 
 class Editor:
-    def __init__(self, path: str, tododict: dict[str, dict[str, str]]) -> None:
+    def __init__(self, path: str) -> None:
         self._path = path
-        self._tododict = tododict
         self._current_content = self.load()
 
     def load(self) -> dict:
-        with open(self._path, "r", encoding="utf-8") as f:
-            return yaml.load(f, Loader=yaml.FullLoader)
+        try:
+            with open(self._path, "r", encoding="utf-8") as f:
+                return yaml.load(f, Loader=yaml.FullLoader)
+        except FileNotFoundError:
+            return {}
 
-    def update(self):
-        self._current_content.update(self._tododict)
-        print(f"\nnewcontent: {self._current_content}")
+    def update(self, tododict: dict[str, dict[str, str]]):
+        self._current_content.update(tododict)
         self._write()
+
+    @property
+    def todos(self) -> dict[str, dict[str, str]]:
+        return self._current_content
 
     def _write(self):
         with open(self._path, "w", encoding="utf-8") as f:
