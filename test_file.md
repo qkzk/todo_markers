@@ -15,6 +15,6 @@ some text
 <!--
 
 TODO: should be found line 17
-TODO: should be found line 18
+TODO: #23 should be found line 18
 
 -->
