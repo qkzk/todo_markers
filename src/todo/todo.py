@@ -16,6 +16,7 @@ class Todo:
         self._linenr: int = linenr
         self._todo: str = todo
         self._id: Optional[int] = None
+        self._updated = False
 
     @staticmethod
     def _parse_content(line_content: str) -> str:
@@ -23,11 +24,26 @@ class Todo:
 
     @classmethod
     def from_span(cls, linenr: int, line_content: str) -> Todo:
-        todo = cls._parse_content(line_content)
-        return cls(linenr, todo)
+        todo_line = cls._parse_content(line_content)
+        return cls.from_yaml(linenr, todo_line)
+        # search = cls._PATTERN.search(todo_line)
+        # if search is not None:
+        #     todo_id = int(search.group(0)[1:])
+        #     _, todo_content = cls._PATTERN.split(todo_line)
+        # else:
+        #     todo_id = None
+        #     todo_content = todo_line
+        #
+        # todo = cls(linenr, todo_content)
+        # if todo_id is not None:
+        #     todo.github_id = todo_id
+        # return todo
+        # todo = cls._parse_content(line_content)
+
+        # return cls(linenr, todo)
 
     @classmethod
-    def from_yaml(cls, linenr_str: str, line_content: str) -> Todo:
+    def from_yaml(cls, linenr_str: str | int, line_content: str) -> Todo:
         search = cls._PATTERN.search(line_content)
         if search is not None:
             todo_id = int(search.group(0)[1:])
@@ -72,6 +88,13 @@ class Todo:
             "body": f"{self.todo}\n\n\nFrom todo_markers",
             "labels": ["Todo"],
         }
+
+    @property
+    def updated(self) -> bool:
+        return self._updated
+
+    def update(self) -> None:
+        self._updated = True
 
 
 def todo_representer(dumper: yaml.SafeDumper, todo: Todo) -> yaml.nodes.ScalarNode:

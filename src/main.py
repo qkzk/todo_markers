@@ -1,6 +1,6 @@
 """
 TodoMarkers: Explore a folder looking for todo comments.
-Any kind of # TODO: blablabla will be reported in a common file.
+Any kind of # TODO: #41 - blablabla will be reported in a common file.
 """
 import argparse
 import os

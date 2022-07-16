@@ -4,17 +4,17 @@ TODO: shouln't match
 
 <!-- Todo: shouldn't match not the right keywork -->
 
-<!-- TODO: should be found line 7 col 6 -->
+<!-- TODO: #42 - should be found line 7 col 6 -->
 
 some text
 
-<!--         TODO: should be found line 7 col 14 -->
+<!--         TODO: #43 - should be found line 7 col 14 -->
 
 some text
 
 <!--
 
-TODO: should be found line 17
-TODO: #23 should be found line 18
+TODO: #44 - should be found line 17
+TODO: #23 - should be found line 18
 
 -->

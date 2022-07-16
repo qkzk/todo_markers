@@ -47,7 +47,8 @@ class Editor:
     def _update_files(self):
         for filepath, tododict in self._todos.items():
             for line_number, todo in tododict.items():
-                self._update_source_file(filepath, line_number, todo)
+                if todo.updated:
+                    self._update_source_file(filepath, line_number, todo)
 
     def _update_source_file(self, filepath: str, line_number: int, todo: Todo):
         with open(filepath, "r", encoding="utf-8") as f:
@@ -69,5 +70,4 @@ class Editor:
                 issue_number = GithubApi("qkzk", "todo_markers").create_issue(todo)
                 if issue_number > 0:
                     todo.github_id = issue_number
-                break
-            break
+                    todo.update()
