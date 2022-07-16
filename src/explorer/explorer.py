@@ -2,13 +2,14 @@ import os
 
 from ..parser import COMMENT_KEYWORDS
 from ..parser import Parser
+from ..todo import Todo
 
 
 class Explorer:
     def __init__(self, rootpath: str):
         self._rootpath = os.path.abspath(rootpath)
         self._valid_extensions = COMMENT_KEYWORDS.keys()
-        self._todos: dict[str, dict[str, str]] = {}
+        self._todos: dict[str, dict[str, Todo]] = {}
 
     def explore(self, path=None) -> None:
         if path is None:
@@ -30,7 +31,7 @@ class Explorer:
         return ext in self._valid_extensions
 
     @property
-    def todos(self) -> dict[str, dict[str, str]]:
+    def todos(self) -> dict[str, dict[str, Todo]]:
         return self._todos
 
 

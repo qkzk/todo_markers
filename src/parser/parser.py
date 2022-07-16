@@ -3,34 +3,7 @@ import re
 from typing import Optional
 
 from .comment_keyword import COMMENT_KEYWORDS
-
-REGEXTODO = "TODO: "
-
-
-class Todo:
-    def __init__(self, linenr: int, todo: str):
-        self._linenr: int = linenr
-        self._todo: str = todo
-
-    @staticmethod
-    def _parse_content(line_content: str) -> str:
-        return line_content.split(REGEXTODO)[1].splitlines()[0].strip()
-
-    @classmethod
-    def from_span(cls, linenr: int, line_content: str) -> Todo:
-        todo = cls._parse_content(line_content)
-        return cls(linenr, todo)
-
-    def __repr__(self) -> str:
-        return self._todo
-
-    @property
-    def linenr(self) -> int:
-        return self._linenr
-
-    @property
-    def todo(self) -> str:
-        return self._todo
+from ..todo import Todo, REGEXTODO
 
 
 class ParserError(Exception):
@@ -45,7 +18,7 @@ class Parser:
         self._start_comment: re.Pattern
         self._end_comment: re.Pattern
         self._read_comment_keywoard()
-        self._todos: Optional[dict[str, str]] = None
+        self._todos: Optional[dict[str, Todo]] = None
         self._lines: list[str]
         self._get_lines_of_path()
 
@@ -63,7 +36,7 @@ class Parser:
             self._lines = filecontent.readlines()
 
     def parse(self) -> None:
-        todos: dict[str, str] = {}
+        todos: dict[str, Todo] = {}
         in_comment_block = False
         for line_nr, line in enumerate(self._lines):
             if not in_comment_block and self._start_comment.search(line):
@@ -71,14 +44,14 @@ class Parser:
             if in_comment_block:
                 matched = self._pattern.search(line)
                 if matched:
-                    content = Todo.from_span(line_nr, line).todo
-                    todos[str(line_nr)] = content
+                    todo = Todo.from_span(line_nr, line)
+                    todos[str(line_nr)] = todo
             if in_comment_block and self._end_comment.search(line):
                 self.in_comment_block = False
         self._todos = todos
 
     @property
-    def todos(self) -> dict[str, str]:
+    def todos(self) -> dict[str, Todo]:
         if self._todos is None:
             raise ParserError(f"Document {self._path} hasn't been parsed")
         return self._todos
