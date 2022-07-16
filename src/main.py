@@ -43,6 +43,8 @@ def main():
     editor = Editor(export_file)
     editor.load()
     editor.update(explorer.todos)
+    editor.publish()
+    editor.write()
 
 
 def test():

@@ -38,13 +38,13 @@ class Todo:
 
         todo = cls(int(linenr_str), todo_content)
         if todo_id is not None:
-            todo.id = todo_id
+            todo.github_id = todo_id
 
         return todo
 
     def __repr__(self) -> str:
         if self.has_id():
-            return f"#{id} - {self._todo}"
+            return f"#{self.github_id} - {self._todo}"
         return self._todo
 
     @property
@@ -56,19 +56,26 @@ class Todo:
         return self._todo
 
     @property
-    def id(self) -> Optional[int]:
+    def github_id(self) -> Optional[int]:
         return self._id
 
-    @id.setter
-    def id(self, idn) -> None:
+    @github_id.setter
+    def github_id(self, idn) -> None:
         self._id = idn
 
     def has_id(self) -> bool:
         return self._id is not None
 
+    def to_json(self) -> dict:
+        return {
+            "title": f"Todo: {self.todo}",
+            "body": f"{self.todo}\n\n\nFrom todo_markers",
+            "labels": ["Todo"],
+        }
+
 
 def todo_representer(dumper: yaml.SafeDumper, todo: Todo) -> yaml.nodes.ScalarNode:
-    return dumper.represent_str(todo.todo)
+    return dumper.represent_str(repr(todo))
 
 
 def get_dumper() -> Type[yaml.SafeDumper]:

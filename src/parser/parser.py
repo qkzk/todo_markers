@@ -18,7 +18,7 @@ class Parser:
         self._start_comment: re.Pattern
         self._end_comment: re.Pattern
         self._read_comment_keywoard()
-        self._todos: Optional[dict[str, Todo]] = None
+        self._todos: Optional[dict[int, Todo]] = None
         self._lines: list[str]
         self._get_lines_of_path()
 
@@ -36,7 +36,7 @@ class Parser:
             self._lines = filecontent.readlines()
 
     def parse(self) -> None:
-        todos: dict[str, Todo] = {}
+        todos: dict[int, Todo] = {}
         in_comment_block = False
         for line_nr, line in enumerate(self._lines):
             if not in_comment_block and self._start_comment.search(line):
@@ -45,13 +45,13 @@ class Parser:
                 matched = self._pattern.search(line)
                 if matched:
                     todo = Todo.from_span(line_nr, line)
-                    todos[str(line_nr)] = todo
+                    todos[line_nr] = todo
             if in_comment_block and self._end_comment.search(line):
                 self.in_comment_block = False
         self._todos = todos
 
     @property
-    def todos(self) -> dict[str, Todo]:
+    def todos(self) -> dict[int, Todo]:
         if self._todos is None:
             raise ParserError(f"Document {self._path} hasn't been parsed")
         return self._todos

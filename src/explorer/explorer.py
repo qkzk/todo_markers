@@ -9,7 +9,7 @@ class Explorer:
     def __init__(self, rootpath: str):
         self._rootpath = os.path.abspath(rootpath)
         self._valid_extensions = COMMENT_KEYWORDS.keys()
-        self._todos: dict[str, dict[str, Todo]] = {}
+        self._todos: dict[str, dict[int, Todo]] = {}
 
     def explore(self, path=None) -> None:
         if path is None:
@@ -31,8 +31,8 @@ class Explorer:
         return ext in self._valid_extensions
 
     @property
-    def todos(self) -> dict[str, dict[str, Todo]]:
+    def todos(self) -> dict[str, dict[int, Todo]]:
         return self._todos
 
 
-# TODO: que sera ma vie ?
+# TODO: #40 - #39 - que sera ma vie ?

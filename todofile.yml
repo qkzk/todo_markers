@@ -1,9 +1,9 @@
 /home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/explorer/explorer.py:
-  '37': que sera ma vie ?
+  37: '#40 - #39 - que sera ma vie ?'
 /home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/main.py:
-  '2': blablabla will be reported in a common file.
+  2: blablabla will be reported in a common file.
 /home/quentin/gclem/dev/python/boulot_utils/todo_markers/test_file.md:
-  '10': should be found line 7 col 14 -->
-  '16': should be found line 17
-  '17': '#23 should be found line 18'
-  '6': should be found line 7 col 6 -->
+  6: should be found line 7 col 6 -->
+  10: should be found line 7 col 14 -->
+  16: should be found line 17
+  17: '#23 should be found line 18'
