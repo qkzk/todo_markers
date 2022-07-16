@@ -40,9 +40,7 @@ def main():
     print(f"exploring from {rootdir}, exporting to {export_file}")
     explorer = Explorer(rootdir)
     explorer.explore()
-    editor = Editor(export_file)
-    editor.load()
-    editor.update(explorer.todos)
+    editor = Editor(export_file, explorer.todos)
     editor.publish()
     editor.write()
 

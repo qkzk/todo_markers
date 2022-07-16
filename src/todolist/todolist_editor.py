@@ -5,61 +5,11 @@ from ..todo import Todo, get_dumper
 
 
 class Editor:
-    def __init__(self, path: str) -> None:
+    # TODO: #50 - rename file
+    def __init__(self, path: str, todos: dict[str, dict[int, Todo]]) -> None:
         self._path = path
-        self._current_content = self.load()
-        self._todos: dict[str, dict[int, Todo]]
-        self.generate_todos()
-
-    def generate_todos(self) -> None:
-        self._todos = {
-            filepath: {
-                linenr: Todo.from_yaml(linenr, content)
-                for linenr, content in filecontent.items()
-            }
-            for filepath, filecontent in self._current_content.items()
-        }
-
-    def load(self) -> dict:
-        try:
-            with open(self._path, "r", encoding="utf-8") as f:
-                return yaml.load(f, Loader=yaml.FullLoader)
-        except FileNotFoundError:
-            return {}
-
-    def update(self, tododict: dict[str, dict[int, Todo]]):
-        self._todos.update(tododict)
-
-    @property
-    def todos(self) -> dict[str, dict[int, Todo]]:
-        return self._todos
-
-    def write(self):
-        yaml.Dumper.ignore_aliases = lambda *args: True
-        # print(self._todos)
-        # for k, v in self._todos.items():
-        #     for todo in v.values():
-        #         print(id(todo), todo)
-        with open(self._path, "w", encoding="utf-8") as f:
-            f.write(yaml.dump(self._todos, Dumper=get_dumper()))
-        self._update_files()
-
-    def _update_files(self):
-        for filepath, tododict in self._todos.items():
-            for line_number, todo in tododict.items():
-                if todo.updated:
-                    self._update_source_file(filepath, line_number, todo)
-
-    def _update_source_file(self, filepath: str, line_number: int, todo: Todo):
-        with open(filepath, "r", encoding="utf-8") as f:
-            lines = f.readlines()
-        if not repr(todo) in lines[line_number]:
-            lines[line_number] = lines[line_number].replace(todo.todo, repr(todo))
-            print(
-                f"updated {filepath}, line: {line_number}\ncontent: {lines[line_number]}"
-            )
-        with open(filepath, "w", encoding="utf-8") as f:
-            f.writelines(lines)
+        self._todos = todos
+        self.to_update: list[tuple[str, Todo]] = []
 
     def publish(self):
         for filename, todos in self._todos.items():
@@ -70,4 +20,26 @@ class Editor:
                 issue_number = GithubApi("qkzk", "todo_markers").create_issue(todo)
                 if issue_number > 0:
                     todo.github_id = issue_number
-                    todo.update()
+                    self.to_update.append((filename, todo))
+
+    def write(self) -> None:
+        self._dump_to_yaml()
+        self._update_files()
+
+    def _dump_to_yaml(self) -> None:
+        yaml.Dumper.ignore_aliases = lambda *args: True
+        with open(self._path, "w", encoding="utf-8") as f:
+            f.write(yaml.dump(self._todos, Dumper=get_dumper()))
+
+    def _update_files(self) -> None:
+        for filepath, todo in self.to_update:
+            self._update_source_file(filepath, todo)
+
+    def _update_source_file(self, filepath: str, todo: Todo) -> None:
+        with open(filepath, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        line_number = todo.linenr
+        lines[line_number] = lines[line_number].replace(todo.todo, repr(todo))
+        print(f"updated {filepath}, line: {line_number}\ncontent: {lines[line_number]}")
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.writelines(lines)

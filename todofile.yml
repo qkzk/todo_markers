@@ -2,6 +2,8 @@
   37: '#40 - #40 - - que sera ma vie ?'
 /home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/main.py:
   2: '#41 - - blablabla will be reported in a common file.'
+/home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/todolist/todolist_editor.py:
+  7: '#50 - rename file'
 /home/quentin/gclem/dev/python/boulot_utils/todo_markers/test_file.md:
   6: '#42 - - should be found line 7 col 6 -->'
   10: '#43 - - should be found line 7 col 14 -->'

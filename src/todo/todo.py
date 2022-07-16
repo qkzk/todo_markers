@@ -23,36 +23,21 @@ class Todo:
         return line_content.split(REGEXTODO)[1].splitlines()[0].strip()
 
     @classmethod
-    def from_span(cls, linenr: int, line_content: str) -> Todo:
-        todo_line = cls._parse_content(line_content)
-        return cls.from_yaml(linenr, todo_line)
-        # search = cls._PATTERN.search(todo_line)
-        # if search is not None:
-        #     todo_id = int(search.group(0)[1:])
-        #     _, todo_content = cls._PATTERN.split(todo_line)
-        # else:
-        #     todo_id = None
-        #     todo_content = todo_line
-        #
-        # todo = cls(linenr, todo_content)
-        # if todo_id is not None:
-        #     todo.github_id = todo_id
-        # return todo
-        # todo = cls._parse_content(line_content)
-
-        # return cls(linenr, todo)
-
-    @classmethod
-    def from_yaml(cls, linenr_str: str | int, line_content: str) -> Todo:
-        search = cls._PATTERN.search(line_content)
+    def _split_id_content(cls, todo_line: str) -> tuple[Optional[int], str]:
+        search = cls._PATTERN.search(todo_line)
         if search is not None:
             todo_id = int(search.group(0)[1:])
-            _, todo_content = cls._PATTERN.split(line_content)
+            _, todo_content = cls._PATTERN.split(todo_line)
         else:
             todo_id = None
-            todo_content = line_content
+            todo_content = todo_line
+        return todo_id, todo_content
 
-        todo = cls(int(linenr_str), todo_content)
+    @classmethod
+    def from_span(cls, linenr: int, line_content: str) -> Todo:
+        todo_line = cls._parse_content(line_content)
+        todo_id, todo_content = cls._split_id_content(todo_line)
+        todo = cls(linenr, todo_content)
         if todo_id is not None:
             todo.github_id = todo_id
 
