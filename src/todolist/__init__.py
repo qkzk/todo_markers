@@ -1,1 +1,1 @@
-from .todolist_editor import Editor
+from .editor import Editor

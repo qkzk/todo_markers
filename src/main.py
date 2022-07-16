@@ -1,6 +1,6 @@
 """
 TodoMarkers: Explore a folder looking for todo comments.
-Any kind of # TODO: #41 - blablabla will be reported in a common file.
+Any kind of TODO: #41 - blablabla will be reported in a common file.
 """
 import argparse
 import os
@@ -41,6 +41,7 @@ def main():
     explorer = Explorer(rootdir)
     explorer.explore()
     editor = Editor(export_file, explorer.todos)
+    editor.todos = explorer.todos
     editor.publish()
     editor.write()
 

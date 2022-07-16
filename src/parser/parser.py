@@ -36,6 +36,8 @@ class Parser:
             self._lines = filecontent.readlines()
 
     def parse(self) -> None:
+        # TODO: #54 - simplify, really parse the todo, do not delegate to Todo class
+        # TODO: #55 - bug, also read todos from non commented line
         todos: dict[int, Todo] = {}
         in_comment_block = False
         for line_nr, line in enumerate(self._lines):

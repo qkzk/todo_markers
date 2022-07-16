@@ -35,6 +35,7 @@ class Todo:
 
     @classmethod
     def from_span(cls, linenr: int, line_content: str) -> Todo:
+        # TODO: #51 - simplify constructor, move all this to the parser
         todo_line = cls._parse_content(line_content)
         todo_id, todo_content = cls._split_id_content(todo_line)
         todo = cls(linenr, todo_content)

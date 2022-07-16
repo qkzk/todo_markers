@@ -33,6 +33,3 @@ class Explorer:
     @property
     def todos(self) -> dict[str, dict[int, Todo]]:
         return self._todos
-
-
-# TODO: #40 #40 - - que sera ma vie ?
