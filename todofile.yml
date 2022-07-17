@@ -3,6 +3,3 @@
   42: '#53 - - this should be in verbose mode only'
 /home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/main.py:
   2: '#41 - - blablabla will be reported in a common file.'
-/home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/parser/parser.py:
-  43: '#55 - - bug, also read todos from non commented line'
-  82: '#51 - - simplify constructor, move all this to the parser'

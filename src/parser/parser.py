@@ -45,20 +45,13 @@ class Parser:
         in_comment_block = False
         for line_nr, line in enumerate(self._lines):
             if not in_comment_block and self._start_comment.search(line):
-                print(
-                    f"comment block: {self._start_comment.search(line)}, line_nr: {line_nr}, line: {line}"
-                )
                 in_comment_block = True
             if in_comment_block:
                 matched = self._pattern.search(line)
                 if matched:
-                    print(f"matched {matched}, line_nr: {line_nr}, line: {line}")
                     todo = self.create_todo(line_nr, line)
                     todos[line_nr] = todo
             if in_comment_block and self._end_comment.search(line):
-                print(
-                    "end comment: {self._end_comment.search(line)}, line_nr: {line_nr}, line: {line}"
-                )
                 in_comment_block = False
         self._todos = todos
 
@@ -79,7 +72,6 @@ class Parser:
 
     @classmethod
     def create_todo(cls, linenr: int, line_content: str) -> Todo:
-        # TODO: #51 - simplify constructor, move all this to the parser
         todo_line = cls._parse_content(line_content)
         todo_id, todo_content = cls._split_id_content(todo_line)
         todo = Todo(linenr, todo_content)
