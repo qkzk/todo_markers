@@ -14,9 +14,10 @@ class GithubApi:
     URL = "https://api.github.com/repos/{owner}/{repo}/issues"
     AUTH_TOKEN = {"Authorization": f"token {read_token()}"}
 
-    def __init__(self, owner: str, repo: str):
+    def __init__(self, owner: str, repo: str, verbose: bool):
         self._owner = owner
         self._repo = repo
+        self._verbose = verbose
 
     def create_issue(self, todo: Todo) -> int:
         """
@@ -35,6 +36,10 @@ class GithubApi:
             json=body,
             headers=self.AUTH_TOKEN,
         )
+        if self._verbose:
+            print("Github answered with status code: {response.status_code}")
         if response.status_code == STATUS_CODE_OK:
+            if self._verbose:
+                print(f"New issue created at {response.json()['html_url']}")
             return response.json()["number"]
         return -1

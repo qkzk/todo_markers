@@ -1,3 +1,7 @@
+"""
+TodoMarkers: Explore a folder looking for todo comments.
+Any kind of TODO: #41 - blablabla will be reported in a common file.
+"""
 import argparse
 import os
 
@@ -13,15 +17,23 @@ def argument_parser() -> argparse.Namespace:
         required=False,
         help=f"The todo export file, default is `rootdir`/{EXPORT_FILE}`",
     )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        help="Display read, write and API informations",
+        required=False,
+        action="store_true",
+    )
     args = parser.parse_args()
     return args
 
 
-def read_args(args: argparse.Namespace) -> tuple[str, str]:
+def read_args(args: argparse.Namespace) -> tuple[str, str, bool]:
     args = argument_parser()
     rootdir = args.rootdir
     file = args.export_file
+    verbose = args.verbose
     if file is None:
         file = EXPORT_FILE
     export_file = os.path.join(rootdir, file)
-    return rootdir, export_file
+    return rootdir, export_file, verbose

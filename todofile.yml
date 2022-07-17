@@ -1,5 +1,4 @@
-/home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/editor/editor.py:
-  18: '#52 - - verbose argument should display url and wrong status code'
-  42: '#53 - - this should be in verbose mode only'
-/home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/main.py:
+/home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/api/api.py:
+  41: '#64 - url ???'
+/home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/arguments/arguments.py:
   2: '#41 - - blablabla will be reported in a common file.'

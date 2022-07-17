@@ -1,7 +1,3 @@
-"""
-TodoMarkers: Explore a folder looking for todo comments.
-Any kind of TODO: #41 - blablabla will be reported in a common file.
-"""
 from .arguments import argument_parser, read_args
 from .editor import Editor
 from .explorer import Explorer
@@ -9,11 +5,11 @@ from .parser import Parser
 
 
 def main():
-    rootdir, export_file = read_args(argument_parser())
+    rootdir, export_file, verbose = read_args(argument_parser())
     print(f"exploring from {rootdir}, exporting to {export_file}")
     explorer = Explorer(rootdir)
     explorer.explore()
-    editor = Editor(export_file, explorer.todos)
+    editor = Editor(export_file, explorer.todos, verbose)
     editor.todos = explorer.todos
     editor.publish()
     editor.write()
