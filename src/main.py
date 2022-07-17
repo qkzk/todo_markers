@@ -6,7 +6,7 @@ import argparse
 import os
 
 from .parser import Parser
-from .todolist import Editor
+from .editor import Editor
 from .explorer import Explorer
 
 EXPORT_FILE = "todofile.yml"

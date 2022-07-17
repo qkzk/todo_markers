@@ -1,1 +1,1 @@
-from .todo import Todo, REGEXTODO, get_dumper
+from .todo import Todo, get_dumper

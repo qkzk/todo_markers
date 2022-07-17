@@ -1,10 +1,8 @@
+/home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/editor/editor.py:
+  18: '#52 - - verbose argument should display url and wrong status code'
+  42: '#53 - - this should be in verbose mode only'
 /home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/main.py:
   2: '#41 - - blablabla will be reported in a common file.'
 /home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/parser/parser.py:
-  38: '#54 - - simplify, really parse the todo, do not delegate to Todo class'
-  39: '#55 - bug, also read todos from non commented line'
-/home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/todo/todo.py:
-  37: '#51 - - simplify constructor, move all this to the parser'
-/home/quentin/gclem/dev/python/boulot_utils/todo_markers/src/todolist/editor.py:
-  18: '#52 - - verbose argument should display url and wrong status code'
-  42: '#53 - - this should be in verbose mode only'
+  43: '#55 - - bug, also read todos from non commented line'
+  82: '#51 - - simplify constructor, move all this to the parser'

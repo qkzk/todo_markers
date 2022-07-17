@@ -3,7 +3,10 @@ import re
 from typing import Optional
 
 from .comment_keyword import COMMENT_KEYWORDS
-from ..todo import Todo, REGEXTODO
+from ..todo import Todo
+
+REGEXISSUE = "^#[0-9]* "
+REGEXTODO = "TODO: "
 
 
 class ParserError(Exception):
@@ -11,6 +14,8 @@ class ParserError(Exception):
 
 
 class Parser:
+    _PATTERN: re.Pattern = re.compile(REGEXISSUE)
+
     def __init__(self, path: str) -> None:
         self._path = path
         self._ext = path.split(".")[-1]
@@ -36,21 +41,52 @@ class Parser:
             self._lines = filecontent.readlines()
 
     def parse(self) -> None:
-        # TODO: #54 - simplify, really parse the todo, do not delegate to Todo class
-        # TODO: #55 - bug, also read todos from non commented line
         todos: dict[int, Todo] = {}
         in_comment_block = False
         for line_nr, line in enumerate(self._lines):
             if not in_comment_block and self._start_comment.search(line):
+                print(
+                    f"comment block: {self._start_comment.search(line)}, line_nr: {line_nr}, line: {line}"
+                )
                 in_comment_block = True
             if in_comment_block:
                 matched = self._pattern.search(line)
                 if matched:
-                    todo = Todo.from_span(line_nr, line)
+                    print(f"matched {matched}, line_nr: {line_nr}, line: {line}")
+                    todo = self.create_todo(line_nr, line)
                     todos[line_nr] = todo
             if in_comment_block and self._end_comment.search(line):
-                self.in_comment_block = False
+                print(
+                    "end comment: {self._end_comment.search(line)}, line_nr: {line_nr}, line: {line}"
+                )
+                in_comment_block = False
         self._todos = todos
+
+    @staticmethod
+    def _parse_content(line_content: str) -> str:
+        return line_content.split(REGEXTODO)[1].splitlines()[0].strip()
+
+    @classmethod
+    def _split_id_content(cls, todo_line: str) -> tuple[Optional[int], str]:
+        search = cls._PATTERN.search(todo_line)
+        if search is not None:
+            todo_id = int(search.group(0)[1:])
+            _, todo_content = cls._PATTERN.split(todo_line)
+        else:
+            todo_id = None
+            todo_content = todo_line
+        return todo_id, todo_content
+
+    @classmethod
+    def create_todo(cls, linenr: int, line_content: str) -> Todo:
+        # TODO: #51 - simplify constructor, move all this to the parser
+        todo_line = cls._parse_content(line_content)
+        todo_id, todo_content = cls._split_id_content(todo_line)
+        todo = Todo(linenr, todo_content)
+        if todo_id is not None:
+            todo.github_id = todo_id
+
+        return todo
 
     @property
     def todos(self) -> dict[int, Todo]:

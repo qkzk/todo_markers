@@ -1,48 +1,15 @@
 from __future__ import annotations
-import re
 from typing import Optional, Type
 
 import yaml
 
 
-REGEXTODO = "TODO: "
-REGEXISSUE = "^#[0-9]* "
-
-
 class Todo:
-    _PATTERN: re.Pattern = re.compile(REGEXISSUE)
-
     def __init__(self, linenr: int, todo: str):
         self._linenr: int = linenr
         self._todo: str = todo
         self._id: Optional[int] = None
         self._updated = False
-
-    @staticmethod
-    def _parse_content(line_content: str) -> str:
-        return line_content.split(REGEXTODO)[1].splitlines()[0].strip()
-
-    @classmethod
-    def _split_id_content(cls, todo_line: str) -> tuple[Optional[int], str]:
-        search = cls._PATTERN.search(todo_line)
-        if search is not None:
-            todo_id = int(search.group(0)[1:])
-            _, todo_content = cls._PATTERN.split(todo_line)
-        else:
-            todo_id = None
-            todo_content = todo_line
-        return todo_id, todo_content
-
-    @classmethod
-    def from_span(cls, linenr: int, line_content: str) -> Todo:
-        # TODO: #51 - simplify constructor, move all this to the parser
-        todo_line = cls._parse_content(line_content)
-        todo_id, todo_content = cls._split_id_content(todo_line)
-        todo = cls(linenr, todo_content)
-        if todo_id is not None:
-            todo.github_id = todo_id
-
-        return todo
 
     def __repr__(self) -> str:
         if self.has_id():
