@@ -24,8 +24,7 @@ class Parser:
         self._end_comment: re.Pattern
         self._read_comment_keywoard()
         self._todos: Optional[dict[int, Todo]] = None
-        self._lines: list[str]
-        self._get_lines_of_path()
+        self._lines: list[str] = self._get_lines_of_path()
 
     def _read_comment_keywoard(self) -> None:
         _comment_keyword = COMMENT_KEYWORDS.get(self._ext)
@@ -36,9 +35,12 @@ class Parser:
         self._start_comment = re.compile(start)
         self._end_comment = re.compile(end)
 
-    def _get_lines_of_path(self) -> None:
-        with open(self._path) as filecontent:
-            self._lines = filecontent.readlines()
+    def _get_lines_of_path(self) -> list[str]:
+        try:
+            with open(self._path, "r", encoding="utf-8") as filecontent:
+                return filecontent.readlines()
+        except UnicodeDecodeError:
+            return []
 
     def parse(self) -> None:
         todos: dict[int, Todo] = {}

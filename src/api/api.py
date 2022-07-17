@@ -1,18 +1,14 @@
 import requests
 
 from ..todo import Todo
+from .token import TOKEN
 
 STATUS_CODE_OK = 201
 
 
-def read_token():
-    with open("./token", "r", encoding="utf-8") as tokenfile:
-        return tokenfile.read().strip()
-
-
 class GithubApi:
     URL = "https://api.github.com/repos/{owner}/{repo}/issues"
-    AUTH_TOKEN = {"Authorization": f"token {read_token()}"}
+    AUTH_TOKEN = {"Authorization": f"token {TOKEN}"}
 
     def __init__(self, owner: str, repo: str, verbose: bool):
         self._owner = owner
