@@ -1,9 +1,12 @@
 from __future__ import annotations
 import re
+import os
 from typing import Optional
 
 from .comment_keyword import COMMENT_KEYWORDS
+from ..gitlinker import gitlinker
 from ..todo import Todo
+from ..utils import get_user_repo
 
 REGEXISSUE = "^#[0-9]* "
 REGEXTODO = "TODO: "
@@ -16,8 +19,9 @@ class ParserError(Exception):
 class Parser:
     _PATTERN: re.Pattern = re.compile(REGEXISSUE)
 
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: str, root_path: str) -> None:
         self._path = path
+        self._relpath = os.path.relpath(path, root_path)
         self._ext = path.split(".")[-1]
         self._pattern = re.compile(REGEXTODO)
         self._start_comment: re.Pattern
@@ -61,22 +65,23 @@ class Parser:
     def _parse_content(line_content: str) -> str:
         return line_content.split(REGEXTODO)[1].splitlines()[0].strip()
 
-    @classmethod
-    def _split_id_content(cls, todo_line: str) -> tuple[Optional[int], str]:
-        search = cls._PATTERN.search(todo_line)
+    def _split_id_content(self, todo_line: str) -> tuple[Optional[int], str]:
+        search = self._PATTERN.search(todo_line)
         if search is not None:
             todo_id = int(search.group(0)[1:])
-            _, todo_content = cls._PATTERN.split(todo_line)
+            _, todo_content = self._PATTERN.split(todo_line)
         else:
             todo_id = None
             todo_content = todo_line
         return todo_id, todo_content
 
-    @classmethod
-    def create_todo(cls, linenr: int, line_content: str) -> Todo:
-        todo_line = cls._parse_content(line_content)
-        todo_id, todo_content = cls._split_id_content(todo_line)
-        todo = Todo(linenr, todo_content)
+    def create_todo(self, linenr: int, line_content: str) -> Todo:
+        todo_line = self._parse_content(line_content)
+        todo_id, todo_content = self._split_id_content(todo_line)
+        owner, repo = get_user_repo()
+        gitlink = gitlinker(owner, repo, self._path, self._relpath, linenr)
+        # TODO: #66 - link?
+        todo = Todo(linenr, todo_content, self._relpath, gitlink)
         if todo_id is not None:
             todo.github_id = todo_id
 

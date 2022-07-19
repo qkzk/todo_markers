@@ -20,7 +20,7 @@ class Explorer:
                     continue
                 self.explore(path=f.path)
             elif f.is_file() and self._is_valid(f.name):
-                p = Parser(f.path)
+                p = Parser(f.path, self._rootpath)
                 p.parse()
                 todos = p.todos
                 if todos:

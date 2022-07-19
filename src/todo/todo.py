@@ -5,9 +5,12 @@ import yaml
 
 
 class Todo:
-    def __init__(self, linenr: int, todo: str):
+    def __init__(self, linenr: int, todo: str, relpath: str, gitlink: str):
         self._linenr: int = linenr
         self._todo: str = todo
+        self._relpath: str = relpath
+        self._gitlink = gitlink
+        self._body: str = self._create_body()
         self._id: Optional[int] = None
         self._updated = False
 
@@ -25,6 +28,10 @@ class Todo:
         return self._todo
 
     @property
+    def body(self) -> str:
+        return self._body
+
+    @property
     def github_id(self) -> Optional[int]:
         return self._id
 
@@ -38,9 +45,19 @@ class Todo:
     def to_json(self) -> dict:
         return {
             "title": f"Todo: {self.todo}",
-            "body": f"{self.todo}\n\n\nFrom todo_markers",
+            "body": self.body,
             "labels": ["Todo"],
         }
+
+    def _create_body(self) -> str:
+        return f"""{self.todo}
+
+[Line]({self._gitlink})
+
+From _todo_markers_"""
+
+    # [line]({self._relpath}/#L{self._linenr})
+    # TODO: #65 - use gitlinker
 
     @property
     def updated(self) -> bool:
