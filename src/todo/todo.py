@@ -1,50 +1,22 @@
 from __future__ import annotations
-import re
 from typing import Optional, Type
 
 import yaml
 
 
-REGEXTODO = "TODO: "
-REGEXISSUE = "^#[0-9]* "
-
-
 class Todo:
-    _PATTERN: re.Pattern = re.compile(REGEXISSUE)
-
-    def __init__(self, linenr: int, todo: str):
+    def __init__(self, linenr: int, todo: str, relpath: str, gitlink: str):
         self._linenr: int = linenr
         self._todo: str = todo
+        self._relpath: str = relpath
+        self._gitlink = gitlink
+        self._body: str = self._create_body()
         self._id: Optional[int] = None
-
-    @staticmethod
-    def _parse_content(line_content: str) -> str:
-        return line_content.split(REGEXTODO)[1].splitlines()[0].strip()
-
-    @classmethod
-    def from_span(cls, linenr: int, line_content: str) -> Todo:
-        todo = cls._parse_content(line_content)
-        return cls(linenr, todo)
-
-    @classmethod
-    def from_yaml(cls, linenr_str: str, line_content: str) -> Todo:
-        search = cls._PATTERN.search(line_content)
-        if search is not None:
-            todo_id = int(search.group(0)[1:])
-            _, todo_content = cls._PATTERN.split(line_content)
-        else:
-            todo_id = None
-            todo_content = line_content
-
-        todo = cls(int(linenr_str), todo_content)
-        if todo_id is not None:
-            todo.id = todo_id
-
-        return todo
+        self._updated = False
 
     def __repr__(self) -> str:
         if self.has_id():
-            return f"#{id} - {self._todo}"
+            return f"#{self.github_id} - {self._todo}"
         return self._todo
 
     @property
@@ -56,19 +28,47 @@ class Todo:
         return self._todo
 
     @property
-    def id(self) -> Optional[int]:
+    def body(self) -> str:
+        return self._body
+
+    @property
+    def github_id(self) -> Optional[int]:
         return self._id
 
-    @id.setter
-    def id(self, idn) -> None:
+    @github_id.setter
+    def github_id(self, idn) -> None:
         self._id = idn
 
     def has_id(self) -> bool:
         return self._id is not None
 
+    def to_json(self) -> dict:
+        return {
+            "title": f"Todo: {self.todo}",
+            "body": self.body,
+            "labels": ["Todo"],
+        }
+
+    def _create_body(self) -> str:
+        return f"""{self.todo}
+
+[Line]({self._gitlink})
+
+From _todo_markers_"""
+
+    # [line]({self._relpath}/#L{self._linenr})
+    # TODO: #65 - use gitlinker
+
+    @property
+    def updated(self) -> bool:
+        return self._updated
+
+    def update(self) -> None:
+        self._updated = True
+
 
 def todo_representer(dumper: yaml.SafeDumper, todo: Todo) -> yaml.nodes.ScalarNode:
-    return dumper.represent_str(todo.todo)
+    return dumper.represent_str(repr(todo))
 
 
 def get_dumper() -> Type[yaml.SafeDumper]:

@@ -10,10 +10,10 @@ inspired by [Tsoding : Snitch](/https://github.com/tsoding/snitch)
   - [x] read & parse file
 - [ ] sort todos by gravity
 - [x] creates / maintain a report
-- [ ] creates an issue for every non reported todo
+- [x] creates an issue for every non reported todo
 - [ ] commit & push the report
 - [ ] config : `.todoconfig`
   - [ ] read a config file
   - [ ] limit to specific filetypes
-- [ ] modify sourcecode to integrate todo
+- [x] modify sourcecode to integrate todo
 - [ ] make it callable from neovim
